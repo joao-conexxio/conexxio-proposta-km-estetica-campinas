@@ -13,6 +13,7 @@
   <meta property="og:url" content="https://joao-conexxio.github.io/conexxio-proposta-km-estetica-campinas/">
   <meta property="og:image" content="https://joao-conexxio.github.io/conexxio-proposta-km-estetica-campinas/previa.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <script>document.documentElement.classList.add('js')</script>
   <style>
     :root {
       color-scheme: light;
@@ -36,6 +37,7 @@
     a { color: inherit; }
     .wrap { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
     .topbar { display: flex; align-items: center; justify-content: space-between; padding: 23px 0; border-bottom: 1px solid var(--line); }
+    .scroll-progress { position: fixed; inset: 0 auto auto 0; z-index: 20; width: 100%; height: 3px; background: var(--green); transform: scaleX(0); transform-origin: left center; pointer-events: none; }
     .brand { display: flex; gap: 11px; align-items: center; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 750; letter-spacing: -.035em; }
     .brand-mark { display: grid; width: 31px; height: 31px; place-items: center; border-radius: 10px; background: var(--green); color: var(--forest); }
     .brand-mark svg { width: 18px; height: 18px; }
@@ -43,11 +45,20 @@
     .meta-dot { width: 7px; height: 7px; border-radius: 50%; background: #73be4f; box-shadow: 0 0 0 4px #e1efd9; }
     .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(390px, .96fr); gap: clamp(40px, 7vw, 98px); align-items: center; min-height: 650px; padding: 76px 0 90px; }
     .hero-copy { position: relative; z-index: 1; }
+    .hero-copy .eyebrow, .hero-copy .hero-lead, .hero-copy .hero-actions, .hero-copy .proof { animation: rise-in .75s cubic-bezier(.2,.7,.2,1) both; }
+    .hero-copy .eyebrow { animation-delay: 80ms; }
+    .hero-copy .hero-lead { animation-delay: 560ms; }
+    .hero-copy .hero-actions { animation-delay: 680ms; }
+    .hero-copy .proof { animation-delay: 820ms; }
+    .hero-copy .eyebrow { opacity: 0; }
+    .word { display: inline-block; animation: word-in .72s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(140ms + var(--i) * 54ms); }
+    @keyframes word-in { from { opacity: 0; transform: translateY(.72em); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 25px; color: var(--green-dark); font-size: 11px; line-height: 1.4; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
     .eyebrow::before { width: 23px; height: 2px; content: ""; background: #6a9f4b; }
     h1, h2, h3, p { margin-top: 0; }
     h1 { max-width: 670px; margin-bottom: 24px; font-size: clamp(48px, 5.8vw, 76px); line-height: .99; letter-spacing: -.075em; font-weight: 690; }
-    h1 span { color: #5b8d45; }
+    h1 .word--accent { color: #5b8d45; }
     .hero-lead { max-width: 545px; margin-bottom: 30px; color: #56635b; font-size: clamp(17px, 1.7vw, 19px); line-height: 1.65; letter-spacing: -.015em; }
     .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 13px; }
     .button { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; gap: 10px; padding: 0 20px; border: 1px solid transparent; border-radius: 999px; background: var(--forest); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; transition: transform .2s ease, background .2s ease; }
@@ -59,7 +70,7 @@
     .proof-copy { display: grid; gap: 1px; font-size: 12px; }
     .proof-copy strong { font-size: 13px; }
     .proof-copy span { color: var(--muted); }
-    .demo-wrap { position: relative; max-width: 500px; justify-self: end; width: 100%; }
+    .demo-wrap { position: relative; max-width: 500px; justify-self: end; width: 100%; animation: rise-in .9s 380ms cubic-bezier(.2,.7,.2,1) both; }
     .orbit { position: absolute; inset: -42px -30px -36px 30px; z-index: 0; border: 1px solid #d3ddcd; border-radius: 48% 52% 43% 57% / 48% 45% 55% 52%; transform: rotate(-9deg); }
     .orbit::before, .orbit::after { position: absolute; content: ""; border: 1px solid #d3ddcd; border-radius: inherit; }
     .orbit::before { inset: 18px -17px -14px 17px; }
@@ -75,10 +86,13 @@
     .chat { display: grid; gap: 13px; min-height: 324px; padding: 23px 19px 18px; background-color: #f4f7f1; background-image: radial-gradient(#e1e8dc 1px, transparent 1px); background-size: 16px 16px; }
     .chat-date { justify-self: center; padding: 5px 10px; border: 1px solid #e5e9e2; border-radius: 20px; background: #fff; color: #7a867e; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
     .bubble { max-width: 82%; padding: 12px 13px 9px; border: 1px solid rgba(24,49,32,.06); border-radius: 4px 16px 16px; background: #fff; box-shadow: 0 3px 9px rgba(25,43,31,.045); font-size: 12px; line-height: 1.5; }
+    .js .chat[data-sequence] .bubble { opacity: 0; transform: translateY(8px) scale(.98); transition: opacity .35s ease, transform .35s cubic-bezier(.2,.7,.2,1); }
+    .js .chat[data-sequence] .bubble.is-shown { opacity: 1; transform: none; }
     .bubble small { display: block; margin-top: 5px; color: #849088; font-size: 9px; text-align: right; }
     .bubble.out { justify-self: end; border-radius: 16px 4px 16px 16px; background: #e1f1d5; }
     .bubble.reply { max-width: 60%; }
-    .typing { display: flex; width: 47px; height: 27px; align-items: center; justify-content: center; gap: 4px; border-radius: 5px 13px 13px; background: white; }
+    .typing { display: flex; width: 47px; height: 27px; align-items: center; justify-content: center; gap: 4px; border-radius: 5px 13px 13px; background: white; opacity: 0; transform: scale(.85); transition: opacity .2s, transform .2s; }
+    .typing.is-active { opacity: 1; transform: scale(1); }
     .typing i { width: 4px; height: 4px; border-radius: 50%; background: #91a095; animation: pulse 1.2s infinite ease-in-out; }
     .typing i:nth-child(2) { animation-delay: .15s; }.typing i:nth-child(3) { animation-delay: .3s; }
     @keyframes pulse { 0%, 60%, 100% { transform: translateY(0); opacity: .55; } 30% { transform: translateY(-3px); opacity: 1; } }
@@ -86,6 +100,20 @@
     .floating-note { position: absolute; top: -23px; right: 21px; z-index: 2; display: flex; align-items: center; gap: 9px; padding: 12px 15px; border: 1px solid #e3e8df; border-radius: 14px; background: var(--white); box-shadow: 0 12px 32px rgba(21,48,32,.11); font-size: 11px; font-weight: 700; transform: rotate(-2deg); }
     .floating-note svg { width: 17px; height: 17px; color: #5b9947; }
     .section { padding: 100px 0; }
+    .visual-section { padding: 12px 0 82px; }
+    .visual-frame { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(28px, 5vw, 64px); align-items: center; min-height: 460px; padding: clamp(28px, 5vw, 62px); border-radius: 26px; background: var(--forest); color: #fff; }
+    .visual-copy { max-width: 450px; }
+    .visual-copy .eyebrow { color: #d8f8ae; }
+    .visual-copy h2 { margin-bottom: 17px; font-size: clamp(34px, 4vw, 53px); }
+    .visual-copy p:last-child { max-width: 390px; margin: 0; color: rgba(255,255,255,.72); font-size: 14px; line-height: 1.7; }
+    .visual-gallery { display: grid; grid-template-columns: 1fr; min-width: 0; }
+    .photo-card { position: relative; overflow: hidden; min-width: 0; min-height: 430px; margin: 0; border-radius: 17px; background: #e8eee3; }
+    .visual-photo { display: block; width: 100%; height: 100%; min-height: 430px; object-fit: cover; object-position: center; transition: transform .5s cubic-bezier(.2,.7,.2,1); will-change: transform; }
+    .photo-credit { position: absolute; right: 10px; bottom: 10px; left: 10px; padding: 8px 10px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; background: rgba(16,31,22,.62); color: #fff; font-size: 9px; line-height: 1.4; backdrop-filter: blur(10px); }
+    .js [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .72s cubic-bezier(.2,.7,.2,1), transform .72s cubic-bezier(.2,.7,.2,1); }
+    .js [data-reveal].is-in { opacity: 1; transform: none; }
+    .ambient { position: absolute; z-index: -1; top: 40px; right: -12vw; width: 42vw; height: 42vw; max-width: 620px; max-height: 620px; pointer-events: none; border-radius: 50%; background: radial-gradient(circle, rgba(197,226,177,.26), rgba(197,226,177,0) 68%); animation: breathe 7s ease-in-out infinite alternate; }
+    @keyframes breathe { to { transform: scale(1.12) translate(-2%, 2%); opacity: .65; } }
     .section-light { border-top: 1px solid var(--line); background: var(--white); }
     .section-head { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 43px; }
     .section-head .eyebrow { margin-bottom: 15px; }
@@ -146,6 +174,11 @@
       .floating-note { top: -19px; right: 1px; font-size: 10px; }
       .proof { margin-top: 28px; }
       .section { padding: 73px 0; }
+      .visual-section { padding: 0 0 65px; }
+      .visual-frame { grid-template-columns: 1fr; gap: 27px; min-height: 0; padding: 27px 22px 22px; border-radius: 20px; }
+      .visual-copy h2 { font-size: clamp(32px, 8vw, 42px); }
+      .photo-card, .visual-photo { min-height: 390px; }
+      .photo-credit { right: 6px; bottom: 6px; left: 6px; padding: 7px; font-size: 8px; }
       .section-head { margin-bottom: 28px; }
       h2 { font-size: clamp(34px, 9vw, 46px); }
       .steps { grid-template-columns: 1fr; gap: 10px; }
@@ -160,10 +193,11 @@
       footer { align-items: flex-start; flex-direction: column; gap: 9px; }
       .fine { text-align: left; }
     }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; } .js [data-reveal] { opacity: 1; transform: none; } .js .chat[data-sequence] .bubble { opacity: 1; transform: none; } .typing { display: none; } }
   </style>
 </head>
 <body>
+  <div class="scroll-progress" aria-hidden="true"></div>
   <header class="wrap topbar">
     <a class="brand" href="#inicio" aria-label="Conexxio, início">
       <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h4l2.2-5 3.5 10 2-5H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -174,9 +208,10 @@
 
   <main id="inicio">
     <section class="wrap hero" aria-labelledby="hero-title">
+      <div class="ambient" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="eyebrow">Uma ideia para a rotina da KM Estética Avançada</p>
-        <h1 id="hero-title">O retorno da toxina não precisa depender da <span>memória.</span></h1>
+        <h1 id="hero-title"><span class="word" style="--i:0">O</span> <span class="word" style="--i:1">retorno</span> <span class="word" style="--i:2">da</span> <span class="word" style="--i:3">toxina</span> <span class="word" style="--i:4">não</span> <span class="word" style="--i:5">precisa</span> <span class="word" style="--i:6">depender</span> <span class="word" style="--i:7">da</span> <span class="word word--accent" style="--i:8">memória.</span></h1>
         <p class="hero-lead">Um fluxo de WhatsApp pode ajudar a equipe a retomar a conversa no momento definido pela clínica — e facilitar o próximo agendamento.</p>
         <div class="hero-actions">
           <a class="button" href="#fluxo">Veja como funcionaria <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -197,12 +232,12 @@
               <div class="demo-person"><strong>KM Estética Avançada</strong><span>Exemplo ilustrativo de conversa</span></div>
               <span class="demo-label">WhatsApp</span>
             </div>
-            <div class="chat" aria-label="Exemplo ilustrativo de conversa de WhatsApp">
+            <div class="chat" data-sequence aria-label="Exemplo ilustrativo de conversa de WhatsApp">
               <span class="chat-date">Quando chegar o retorno</span>
-              <div class="bubble">Oi! Está chegando o momento do seu retorno da toxina. Quer ajuda para encontrar um horário?<small>09:41</small></div>
-              <div class="bubble out">Quero sim, por favor!<small>09:43&nbsp; ✓✓</small></div>
-              <div class="bubble">Claro 😊 A equipe da KM continua o atendimento por aqui.<small>09:43</small></div>
-              <div class="typing" aria-label="A equipe está respondendo"><i></i><i></i><i></i></div>
+              <div class="bubble" data-chat-message data-speaker="clinic">Oi! Está chegando o momento do seu retorno da toxina. Quer ajuda para encontrar um horário?<small>09:41</small></div>
+              <div class="bubble out" data-chat-message data-speaker="patient">Quero sim, por favor!<small>09:43&nbsp; ✓✓</small></div>
+              <div class="typing" data-typing aria-label="A equipe está respondendo"><i></i><i></i><i></i></div>
+              <div class="bubble" data-chat-message data-speaker="clinic">Claro 😊 A equipe da KM continua o atendimento por aqui.<small>09:43</small></div>
             </div>
             <p class="chat-note">Mensagem e prazo são definidos pela clínica. Exemplo conceitual, sem dados de pacientes.</p>
           </div>
@@ -211,32 +246,41 @@
       </div>
     </section>
 
+    <section class="visual-section" aria-label="Fotos da KM Estética Avançada">
+      <div class="wrap visual-frame" data-reveal data-parallax-frame>
+        <div class="visual-copy"><p class="eyebrow">Fotos do perfil da KM</p><h2>O cuidado continua depois da sessão.</h2><p>Um lembrete no WhatsApp pode ajudar a retomar a conversa sobre o retorno — no momento definido pela clínica.</p></div>
+        <div class="visual-gallery">
+          <figure class="photo-card"><img class="visual-photo" src="assets/perfil-km.jpg" alt="Imagem promocional publicada no Instagram da KM, com uma cena conceitual de cuidado facial." loading="lazy" decoding="async"><figcaption class="photo-credit">Imagem promocional do perfil da KM no Instagram</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
     <section class="section section-light" id="proposta">
       <div class="wrap">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div><p class="eyebrow">Um fluxo simples, pensado para a clínica</p><h2>Da aplicação ao próximo agendamento.</h2></div>
           <p class="section-intro">A ideia é não deixar o acompanhamento depender apenas de a paciente lembrar quando é hora de voltar.</p>
         </div>
         <div class="steps">
-          <article class="step">
+          <article class="step" data-reveal style="transition-delay:80ms">
             <div class="step-top"><span class="step-num">ETAPA 01</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 3v4m8-4v4M4 10h16m-9 4h5m-5 3h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></div>
             <h3>Registre o retorno</h3><p>Na rotina da clínica, a equipe registra o atendimento e o prazo definido pela profissional.</p>
           </article>
-          <article class="step">
+          <article class="step" data-reveal style="transition-delay:170ms">
             <div class="step-top"><span class="step-num">ETAPA 02</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.3 6.45L4 19l1.05-4.35A7.5 7.5 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 11.5h7m-7 3h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span></div>
             <h3>Retome a conversa</h3><p>No momento combinado, uma mensagem pelo WhatsApp convida a paciente a falar com a clínica.</p>
           </article>
-          <article class="step">
+          <article class="step" data-reveal style="transition-delay:260ms">
             <div class="step-top"><span class="step-num">ETAPA 03</span><span class="step-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/></svg></span></div>
             <h3>Ajude a marcar</h3><p>Quem responde segue para a equipe, que dá continuidade e combina o próximo horário.</p>
           </article>
         </div>
-        <div class="note-band"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span><strong>O intervalo é sempre definido pela profissional responsável.</strong> A automação cuida do lembrete e encaminha a conversa; a orientação clínica continua com a equipe.</span></div>
+        <div class="note-band" data-reveal><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span><strong>O intervalo é sempre definido pela profissional responsável.</strong> A automação cuida do lembrete e encaminha a conversa; a orientação clínica continua com a equipe.</span></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="wrap proposal">
+      <div class="wrap proposal" data-reveal>
         <div class="proposal-copy">
           <p class="eyebrow">O que esta demonstração propõe</p>
           <h2>Uma conversa que continua além da aplicação.</h2>
@@ -252,7 +296,7 @@
 
     <section class="end">
       <div class="wrap">
-        <div class="end-card">
+        <div class="end-card" data-reveal>
           <div class="end-copy"><p class="eyebrow">KM Estética Avançada · Campinas</p><h2>Faz sentido para a rotina de vocês?</h2><p>Esta página é uma demonstração gratuita da Conexxio. A conversa pode começar pelo processo atual da clínica e evoluir a partir dele.</p></div>
           <div class="end-action"><a class="button button-dark" href="https://wa.me/5561981695479?text=Oi%2C%20vi%20a%20demonstra%C3%A7%C3%A3o%20da%20Conexxio%20para%20a%20KM%20Est%C3%A9tica%20e%20quero%20conversar%20sobre%20o%20fluxo%20de%20retorno%20da%20toxina." target="_blank" rel="noopener noreferrer">Conversar com a Conexxio <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
         </div>
@@ -260,5 +304,114 @@
       </div>
     </section>
   </main>
+  <script>
+    (() => {
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reveals = [...document.querySelectorAll('[data-reveal]')];
+      const messages = [...document.querySelectorAll('[data-chat-message]')];
+      const typing = document.querySelector('[data-typing]');
+      const chat = document.querySelector('[data-sequence]');
+      if (reduced || !('IntersectionObserver' in window)) {
+        reveals.forEach((el) => el.classList.add('is-in'));
+        messages.forEach((el) => el.classList.add('is-shown'));
+        return;
+      }
+
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-in');
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+      reveals.forEach((el) => revealObserver.observe(el));
+
+      const progress = document.querySelector('.scroll-progress');
+      let framePending = false;
+      const paintProgress = () => {
+        framePending = false;
+        const max = document.documentElement.scrollHeight - innerHeight;
+        if (progress) progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+      };
+      const queueProgress = () => {
+        if (framePending) return;
+        framePending = true;
+        requestAnimationFrame(paintProgress);
+      };
+      addEventListener('scroll', queueProgress, { passive: true });
+      addEventListener('resize', queueProgress, { passive: true });
+      paintProgress();
+
+      const frame = document.querySelector('[data-parallax-frame]');
+      const photos = [...(frame?.querySelectorAll('.visual-photo') || [])];
+      if (frame && photos.length) {
+        let px = 0, py = 0, targetX = 0, targetY = 0, photoFrame = 0;
+        const paintPhoto = () => {
+          photoFrame = 0;
+          const rect = frame.getBoundingClientRect();
+          const scrollOffset = Math.max(-12, Math.min(12, (innerHeight / 2 - (rect.top + rect.height / 2)) * .025));
+          px += (targetX - px) * .12;
+          py += (targetY - py) * .12;
+          photos.forEach((photo) => {
+            photo.style.transform = `scale(1.08) translate(${px.toFixed(1)}px, ${(scrollOffset + py).toFixed(1)}px)`;
+          });
+          if (Math.abs(targetX - px) > .2 || Math.abs(targetY - py) > .2) schedulePhoto();
+        };
+        const schedulePhoto = () => { if (!photoFrame) photoFrame = requestAnimationFrame(paintPhoto); };
+        frame.addEventListener('pointermove', (event) => {
+          const rect = frame.getBoundingClientRect();
+          targetX = (event.clientX - rect.left - rect.width / 2) * -.025;
+          targetY = (event.clientY - rect.top - rect.height / 2) * -.025;
+          schedulePhoto();
+        });
+        frame.addEventListener('pointerleave', () => { targetX = 0; targetY = 0; schedulePhoto(); });
+        addEventListener('scroll', schedulePhoto, { passive: true });
+        addEventListener('resize', schedulePhoto, { passive: true });
+      }
+
+      if (!chat || !messages.length || !typing) {
+        messages.forEach((el) => el.classList.add('is-shown'));
+        return;
+      }
+      let visible = false;
+      let running = false;
+      let cycle = 0;
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const stop = () => { cycle += 1; running = false; typing.classList.remove('is-active'); };
+      const animateConversation = async () => {
+        if (running) return;
+        running = true;
+        const myCycle = ++cycle;
+        while (visible && !document.hidden && myCycle === cycle) {
+          messages.forEach((el) => el.classList.remove('is-shown'));
+          typing.classList.remove('is-active');
+          await wait(550);
+          for (const message of messages) {
+            if (!visible || document.hidden || myCycle !== cycle) break;
+            if (message.dataset.speaker === 'clinic') {
+              typing.classList.add('is-active');
+              await wait(950);
+              typing.classList.remove('is-active');
+            } else {
+              await wait(260);
+            }
+            message.classList.add('is-shown');
+            await wait(1450);
+          }
+          await wait(2600);
+        }
+        if (myCycle === cycle) running = false;
+      };
+      const chatObserver = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) animateConversation(); else stop();
+      }, { threshold: .2 });
+      chatObserver.observe(chat.closest('.demo-wrap') || chat);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stop();
+        else if (visible) animateConversation();
+      });
+    })();
+  </script>
 </body>
 </html>
